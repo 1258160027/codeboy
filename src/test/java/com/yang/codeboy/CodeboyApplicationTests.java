@@ -27,13 +27,7 @@ class CodeboyApplicationTests {
     @Autowired
     private SearchOperations searchOperations;
     @Autowired
-    HelloService helloService;
-    @Autowired
     private RedisTemplate redisTemplate;
-    @Test
-    void contextLoads() {
-        System.out.println(helloService.sayHello());
-    }
 
     @Test
     void testAdd(){
