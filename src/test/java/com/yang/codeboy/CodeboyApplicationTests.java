@@ -3,7 +3,6 @@ package com.yang.codeboy;
 
 import com.yang.codeboy.es.Book;
 import com.yang.codeboy.es.BookRepository;
-import com.yangzkj.mystarter.HelloService;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.BeanUtils;
@@ -13,8 +12,9 @@ import org.springframework.data.elasticsearch.core.ElasticsearchRestTemplate;
 import org.springframework.data.elasticsearch.core.SearchOperations;
 import org.springframework.data.redis.core.RedisTemplate;
 
-import java.util.*;
-import java.util.concurrent.CountDownLatch;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 @SpringBootTest
 @Slf4j
