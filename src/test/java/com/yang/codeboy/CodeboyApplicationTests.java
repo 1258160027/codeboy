@@ -3,6 +3,12 @@ package com.yang.codeboy;
 
 import com.yang.codeboy.es.Book;
 import com.yang.codeboy.es.BookRepository;
+import com.yang.codeboy.io.InHandlerDemo;
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
+import io.netty.channel.Channel;
+import io.netty.channel.ChannelInitializer;
+import io.netty.channel.embedded.EmbeddedChannel;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.BeanUtils;
@@ -12,6 +18,7 @@ import org.springframework.data.elasticsearch.core.ElasticsearchRestTemplate;
 import org.springframework.data.elasticsearch.core.SearchOperations;
 import org.springframework.data.redis.core.RedisTemplate;
 
+import java.nio.ByteBuffer;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -86,4 +93,27 @@ class CodeboyApplicationTests {
         redisTemplate.opsForHash().putAll("bookMap",map);
     }
 
+    @Test
+    public void testInHandlerLifeCircle() {
+        final InHandlerDemo handlerDemo = new InHandlerDemo();
+        ChannelInitializer i = new ChannelInitializer<EmbeddedChannel>() {
+            @Override
+            protected void initChannel(EmbeddedChannel ch) throws Exception {
+                ch.pipeline().addLast(handlerDemo);
+            }
+        };
+        EmbeddedChannel channel = new EmbeddedChannel(i);
+        ByteBuf buf = Unpooled.buffer();
+        buf.writeInt(1);
+        channel.writeInbound(buf);
+        channel.flush();
+        channel.writeInbound(buf);
+        channel.flush();
+        channel.close();
+        try {
+            Thread.sleep(Integer.MAX_VALUE);
+        }catch (InterruptedException e){
+            e.printStackTrace();
+        }
+    }
 }
